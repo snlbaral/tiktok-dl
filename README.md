@@ -3,6 +3,7 @@ A simple tiktok bulk videos downloader written in Python. Now Download all video
 
 # [Installation]
 ``pip install -r requirements.txt``
+
 ``python -m playwright install``
   
 # Usages
