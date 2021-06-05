@@ -12,6 +12,7 @@ class TikTok:
     def download_tiktok(url, path):
         ydl_opts = {
             'outtmpl': 'downloads\%s \%(extractor)s-%(id)s-%(title)s.%(ext)s'.replace("%s ", path),
+            'ignoreerrors': True,
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
