@@ -11,4 +11,5 @@ A simple tiktok bulk videos downloader written in Python. You can download all v
   
 # Usages
   ``python tiktok.py``
+  
   ``python tiktok-auto.py``
