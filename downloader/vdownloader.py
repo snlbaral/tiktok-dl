@@ -50,7 +50,7 @@ class TikTokSelf:
                 wait = WebDriverWait(browser, 100)
                 wait.until(EC.presence_of_all_elements_located((By.XPATH, "//body[@class='']")))
             except Exception as e:
-                print("Unable to reach tiktok or get the element at it...")
+                print("Unable to reach tiktok or get the element at it..")
                 print("Close The Browser & Give It Another Go...")
                 print("Report It, If It Is Happening Frequently!")
                 exit(404)        	
