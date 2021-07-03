@@ -42,6 +42,18 @@ class TikTokSelf:
                 print("Close The Browser & Give It Another Go...")
                 print("Report It, If It Is Happening Frequently!")
                 exit(404)
+        time.sleep(2)
+        body_captcha = browser.find_elements_by_xpath("//body[@class='captcha-disable-scroll']")
+        if body_captcha:
+            print("Open The Minimized Browser & Resolve The Captcha...")
+            try:
+                wait = WebDriverWait(browser, 100)
+                wait.until(EC.presence_of_all_elements_located((By.XPATH, "//body[@class='']")))
+            except Exception as e:
+                print("Unable to reach tiktok or get the element at it...")
+                print("Close The Browser & Give It Another Go...")
+                print("Report It, If It Is Happening Frequently!")
+                exit(404)        	
         time.sleep(1)
         TikTokSelf.scroll_bottom(browser)
         links = browser.find_elements_by_tag_name("a")
