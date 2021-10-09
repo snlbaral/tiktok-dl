@@ -1,3 +1,4 @@
+import concurrent.futures
 from downloader.vdownloader import TikTok
 from TikTokApi import TikTokApi
 
@@ -6,7 +7,8 @@ if __name__ == '__main__':
     username = TikTok.strip_username(username)
     api = TikTokApi()
     try:
-        user_videos = api.by_username(username, count=2000)
+        # api = TikTokApi(custom_verifyFP = "CODE")
+        user_videos = api.by_username(username, count=200)
         if len(user_videos) == 0:
             print("No videos found by", username)
         else:
@@ -17,7 +19,7 @@ if __name__ == '__main__':
                 exit("No of videos should be a type number")
             user_videos = user_videos[:n_videos]        
             user_videos = [TikTok.get_link(v) for v in user_videos]
-            for url in user_videos:
-                TikTok.download_tiktok(url, username)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                exe = {executor.submit(TikTok.download_tiktok, url, username) for url in user_videos}
     except Exception as e:
         print(e)
