@@ -11,6 +11,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 class TikTokSelf:
     def scroll_bottom(browser, last_height=0, wait_scroll=2, loading_xpath=None):
+        TikTokSelf.check_Captcha(browser)
         browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
         print("Loading Videos...")
         new_height = browser.execute_script("return document.body.scrollHeight")
@@ -31,6 +32,27 @@ class TikTokSelf:
         print("Keep The Browser Tab Open, Do Not Minimize To Get Accurate Results...")
         browser.set_window_size(414, 816)
         browser.get("https://www.tiktok.com/@"+username+"?lang=en")
+        TikTokSelf.check_Captcha(browser)
+        TikTokSelf.scroll_bottom(browser)
+        links = browser.find_elements_by_tag_name("a")
+        urls = []
+        print("All Videos Loaded. Generating Links...")
+        for link in links:
+            if link.get_attribute("href"):
+                if "@"+username+"/video/" in link.get_attribute("href"):
+                    urls.append(link.get_attribute("href"))
+        browser.close()
+        if len(urls) > 0:
+            print("{} Videos Found!".format(len(urls)))
+            print("Starting Downlods...")
+            time.sleep(0.5)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                exe = {executor.submit(TikTok.download_tiktok, url, username) for url in urls}
+        else:
+            print("No Videos Found For User: @"+username)
+            exit()
+
+    def check_Captcha(browser):
         captcha = browser.find_elements_by_xpath("//div[@class='verify-wrap']")
         if captcha:
             print("Open The Minimized Browser & Resolve The Captcha...")
@@ -53,26 +75,8 @@ class TikTokSelf:
                 print("Unable to reach tiktok or get the element at it..")
                 print("Close The Browser & Give It Another Go...")
                 print("Report It, If It Is Happening Frequently!")
-                exit(404)        	
+                exit(404)
         time.sleep(1)
-        TikTokSelf.scroll_bottom(browser)
-        links = browser.find_elements_by_tag_name("a")
-        urls = []
-        print("All Videos Loaded. Generating Links...")
-        for link in links:
-            if link.get_attribute("href"):
-                if "@"+username+"/video/" in link.get_attribute("href"):
-                    urls.append(link.get_attribute("href"))
-        browser.close()
-        if len(urls) > 0:
-            print("{} Videos Found!".format(len(urls)))
-            print("Starting Downlods...")
-            time.sleep(0.5)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                exe = {executor.submit(TikTok.download_tiktok, url, username) for url in urls}
-        else:
-            print("No Videos Found For User: @"+username)
-            exit()
 
 
 
